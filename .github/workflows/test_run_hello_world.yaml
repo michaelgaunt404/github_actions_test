@@ -16,7 +16,7 @@ jobs:
         uses: r-lib/actions/setup-pandoc@v2-branch
       - name: Run Script
         run: |
-        write.csv(Sys.Date(), "temp.csv", append = T)
+          write.csv(Sys.Date(), "temp.csv", append = T)
         shell: Rscript {0}
       - name: Commit results
         run: |
