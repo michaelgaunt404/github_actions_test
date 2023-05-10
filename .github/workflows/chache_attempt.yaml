@@ -37,4 +37,4 @@ jobs:
           install.packages("dplyr")
         shell: Rscript {0}
       - name: Run simple R script
-        run: Rscript -e "library(dplyr); print(head(mtcars %>% select(mpg, cyl), 5))"
+        run: Rscript -e "library(dplyr); print(head(mtcars %>% select(mpg, cyl), 2))"
