@@ -2,13 +2,13 @@ name: R workflow
 
 on:
   push:
-    branches: dev_actions
+    branches: [dev_actions]
 
 jobs:
   build:
 
-    runs-on: windows-latest
-    
+    runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v2
       
@@ -17,25 +17,35 @@ jobs:
       with:
         r-version: '4.1.0'
         
-    - name: Set up renv and cache
-      run: |
-        install.packages("renv", type = "win.binary")
-        mkdir -p ${{ runner.temp }}/renv
-        echo "RENV_PATHS_ROOT=${{ runner.temp }}/renv" >> $GITHUB_ENV
+    - name: Set RENV_PATHS_ROOT
       shell: bash
-
-    - name: Cache R package dependencies with renv
-      uses: actions/cache@v2
-      with:
-        path: ${{ env.RENV_PATHS_ROOT }}
-        key: ${{ runner.os }}-r-${{ hashFiles('renv.lock') }}
-        restore-keys: ${{ runner.os }}-r-
-      
-    - name: Install dplyr and other dependencies with renv
       run: |
-        library(renv)
-        renv::restore()
-        renv::install("dplyr")
+        echo "RENV_PATHS_ROOT=${{ runner.temp }}/renv" >> $GITHUB_ENV
 
+    - name: Install and activate renv
+      run: |
+        install.packages("renv")
+        renv::activate()
+      shell: Rscript {0}
+      
+    - name: Get R and OS version
+      id: get-version
+      run: |
+        cat("##[set-output name=os-version;]", sessionInfo()$running, "\n", sep = "")
+        cat("##[set-output name=r-version;]", R.Version()$version.string, sep = "")
+      shell: Rscript {0}
+
+     - name: Restore Renv package cache
+       uses: actions/cache@v3
+       with:
+         path: ${{ env.RENV_PATHS_ROOT }}
+         key: ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-${{ inputs.cache-version }}-${{ hashFiles('renv.lock') }}
+         restore-keys: ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-${{inputs.cache-version }}-
+
+    - name: Install dplyr and other dependencies
+      run: |
+        renv::install("dplyr")
+        
     - name: Run simple R script
-      run: Rscript -e "library(dplyr); iris %>% group_by(Species) %>% summarize(mean_sepal_length = mean(Sepal.Length))"
+      run: Rscript -e "library(dplyr); print(head(mtcars %>% select(mpg, cyl), 5))"
+
