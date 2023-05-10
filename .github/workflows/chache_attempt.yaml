@@ -19,8 +19,7 @@ jobs:
         
     - name: Set up renv and cache
       run: |
-        install.packages("remotes")
-        remotes::install_github("rstudio/renv")
+        install.packages("renv", type = "win.binary")
         mkdir -p ${{ runner.temp }}/renv
         echo "RENV_PATHS_ROOT=${{ runner.temp }}/renv" >> $GITHUB_ENV
       shell: bash
