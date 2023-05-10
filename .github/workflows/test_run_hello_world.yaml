@@ -20,5 +20,6 @@ jobs:
         shell: Rscript {0}
       - name: Commit results
         run: |
-          git commit temp.csv -m 'test' || echo "No changes to commit"
+          git add .
+          git commit -m 'test' || echo "No changes to commit"
           git push origin || echo "No changes to commit"
