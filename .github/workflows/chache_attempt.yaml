@@ -35,5 +35,6 @@ jobs:
       - name: Install dplyr and other dependencies
         run: |
           install.packages("dplyr")
+        shell: Rscript {0}
       - name: Run simple R script
         run: Rscript -e "library(dplyr); print(head(mtcars %>% select(mpg, cyl), 5))"
