@@ -34,6 +34,6 @@ jobs:
           restore-keys: ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-${{inputs.cache-version }}-
       - name: Install dplyr and other dependencies
         run: |
-          renv::install("dplyr")
+          install.packages("dplyr")
       - name: Run simple R script
         run: Rscript -e "library(dplyr); print(head(mtcars %>% select(mpg, cyl), 5))"
