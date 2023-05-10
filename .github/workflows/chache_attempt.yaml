@@ -5,7 +5,7 @@ on:
     branches: [dev_actions]
 
 jobs:
-  build:
+  setup:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -32,6 +32,32 @@ jobs:
           path: ${{ env.RENV_PATHS_ROOT }}
           key: ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-${{ inputs.cache-version }}-${{ hashFiles('renv.lock') }}
           restore-keys: ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-${{inputs.cache-version }}-
+      - name: Install dplyr and other dependencies
+        run: |
+          install.packages("dplyr")
+        shell: Rscript {0}
+      - name: Save R environment for later use
+        run: Rscript -e "renv::snapshot()"
+        shell: Rscript {0}
+        env:
+          RENV_PATHS_CACHE: ${{ env.RENV_PATHS_ROOT }}
+
+  run-scripts:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+      - name: Set RENV_PATHS_ROOT
+        shell: bash
+        run: |
+          echo "RENV_PATHS_ROOT=${{ runner.temp }}/renv" >> $GITHUB_ENV
+      - name: Restore R environment from cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.RENV_PATHS_ROOT }}
+          key: ${{ runner.os }}-${{ env.RENV_PATHS_CACHE }}
       - name: Install dplyr and other dependencies
         run: |
           install.packages("dplyr")
