@@ -53,5 +53,5 @@ jobs:
           path: ${{ env.RENV_PATHS_ROOT }}
           key: ${{ runner.os }}-${{ env.RENV_PATHS_CACHE }}
       - name: Run simple R script
-        run: Rscript -e "library(dplyr); print(head(mtcars %>% select(mpg, cyl), 2))"
+        run: Rscript -e "print(rownames(installed.packages()))"
 
