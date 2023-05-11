@@ -2,6 +2,8 @@ name: My Workflow
 
 on:
   workflow_dispatch:
+  push:
+    branches: [dev_mg]
 
 jobs:
   my-job:
