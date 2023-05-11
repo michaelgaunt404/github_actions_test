@@ -18,7 +18,7 @@ jobs:
       - name: Install and activate renv
         run: |
           install.packages("renv")
-          renv::activate()
+          renv::restore()
         shell: Rscript {0}
       - name: Get R and OS version
         id: get-version
@@ -32,15 +32,6 @@ jobs:
           path: ${{ env.RENV_PATHS_ROOT }}
           key: ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-${{ inputs.cache-version }}-${{ hashFiles('renv.lock') }}
           restore-keys: ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-${{inputs.cache-version }}-
-      - name: Install dplyr and other dependencies
-        run: |
-          install.packages("dplyr")
-        shell: Rscript {0}
-      - name: Save R environment for later use
-        run: Rscript -e "renv::snapshot()"
-        shell: Rscript {0}
-        env:
-          RENV_PATHS_CACHE: ${{ env.RENV_PATHS_ROOT }}
 
   run-scripts:
     runs-on: ubuntu-latest
