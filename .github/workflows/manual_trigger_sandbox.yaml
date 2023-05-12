@@ -37,5 +37,10 @@ jobs:
           restore-keys: ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-${{inputs.cache-version }}-
       - name: Run simple R script
         run: |
-          print(rownames(installed.packages()))
+          install.packages("magrittr")
+          library(magrittr)
+          library(dplyr)
+          df <- data.frame(x = 1:10, y = 11:20)
+          df_filtered <- df %>% filter(x > 5)
+          print(df_filtered)
         shell: Rscript {0} 
