@@ -5,12 +5,10 @@ on:
   push:
     branches: [dev_mg]
 
-env:
-  RENV_PATHS_ROOT: ${{ runner.temp }}/renv
-
 jobs:
   my-job:
     runs-on: windows-latest
+    env: RENV_PATHS_ROOT: ${{ runner.temp }}/renv
     steps:
       - name: My Step
         run: echo "Hello, world!"
