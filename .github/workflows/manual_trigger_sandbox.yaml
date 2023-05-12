@@ -42,6 +42,6 @@ jobs:
           library(magrittr)
           library(dplyr)
           df <- data.frame(x = 1:10, y = 11:20)
-          df_filtered <- df %>% filter(x > 5)
+          df_filtered <- df %>% filter(x > 5)   
           print(df_filtered)
         shell: Rscript {0} 
