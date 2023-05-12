@@ -37,6 +37,7 @@ jobs:
           restore-keys: ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-${{inputs.cache-version }}-
       - name: Run simple R script
         run: |
+          installed.packages()
           install.packages("magrittr")
           library(magrittr)
           library(dplyr)
