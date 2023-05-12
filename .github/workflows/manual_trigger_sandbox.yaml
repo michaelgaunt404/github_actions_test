@@ -35,23 +35,7 @@ jobs:
           path: ${{ env.RENV_PATHS_ROOT }}
           key: ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-${{ inputs.cache-version }}-${{ hashFiles('renv.lock') }}
           restore-keys: ${{ steps.get-version.outputs.os-version }}-${{ steps.get-version.outputs.r-version }}-${{inputs.cache-version }}-
-
-  run-scripts:
-    runs-on: windows-latest
-    needs: my-job
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up R
-        uses: r-lib/actions/setup-r@v2
-      - name: Set RENV_PATHS_ROOT
-        shell: bash
-        run: |
-          echo "RENV_PATHS_ROOT=${{ runner.temp }}/renv" >> $GITHUB_ENV
-      - name: Restore R environment from cache
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.RENV_PATHS_ROOT }}
-          key: ${{ runner.os }}-${{ env.RENV_PATHS_CACHE }}
       - name: Run simple R script
-        run: Rscript -e "print(rownames(installed.packages()))"
-
+         run: |
+          print(rownames(installed.packages()))
+        shell: Rscript {0} 
